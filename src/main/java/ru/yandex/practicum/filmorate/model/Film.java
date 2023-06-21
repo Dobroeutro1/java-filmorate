@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
+
     private long id;
 
     @NotNull
@@ -29,4 +30,5 @@ public class Film {
     @NotNull
     @Positive
     private int duration;
+
 }

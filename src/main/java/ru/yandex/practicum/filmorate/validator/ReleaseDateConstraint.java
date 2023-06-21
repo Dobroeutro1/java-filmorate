@@ -9,7 +9,11 @@ import java.lang.annotation.*;
 @Target({ ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ReleaseDateConstraint {
+
     String message() default "Дата релиза фильма должна быть позже 28 декабря 1895 года";
+
     Class<?>[] groups() default {};
+
     Class<? extends Payload>[] payload() default {};
+
 }

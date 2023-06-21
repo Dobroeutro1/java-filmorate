@@ -1,33 +1,18 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.extern.slf4j.Slf4j;
-import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
-@Slf4j
-public class UserStorage extends Storage<User> {
+import java.util.List;
+import java.util.Optional;
 
-    public User create(User user) {
-        lastId++;
-        user.setId(lastId);
+public interface UserStorage extends Storage<User> {
 
-        if (user.getName() == null || user.getName().isBlank()) {
-            user.setName(user.getLogin());
-        }
+    List<User> getAll();
 
-        items.put(lastId, user);
-        log.info("Создание пользователя: " + user);
-        return user;
-    }
+    Optional<User> getUser(long userId);
 
-    public User update(User user) {
-        if (!items.containsKey(user.getId())) {
-            log.error("Изменение несуществующего пользователя: " + user);
-            throw new NotFoundException("Такого пользователя не существует!");
-        }
+    User create(User item);
 
-        items.put(user.getId(), user);
-        return user;
-    }
+    User update(User item);
 
 }

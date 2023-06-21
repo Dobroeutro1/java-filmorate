@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.Calendar;
 
 public class ReleaseDateValidator implements ConstraintValidator<ReleaseDateConstraint, LocalDate> {
+
     @Override
     public void initialize(ReleaseDateConstraint releaseDate) {
     }
@@ -18,4 +19,5 @@ public class ReleaseDateValidator implements ConstraintValidator<ReleaseDateCons
 
         return releaseDate.isAfter(LocalDate.of(1895, Calendar.DECEMBER, 28));
     }
+
 }
