@@ -27,7 +27,10 @@ public class BaseUserService implements UserService {
 
     @Override
     public User findUser(long userId) {
-        return userStorage.getUser(userId).orElse(null);
+        return userStorage.getUser(userId).orElseThrow(() -> {
+            log.info(String.format("Ошибка получения пользователя с id: %s. Пользователь не найден", userId));
+            return new NotFoundException(String.format("Пользователь с id %s не найден", userId));
+        });
     }
 
     @Override
@@ -37,7 +40,7 @@ public class BaseUserService implements UserService {
 
     @Override
     public User update(User user) {
-        getUserOrThrowError(user.getId());
+        findUser(user.getId());
 
         return userStorage.update(user);
     }
@@ -58,8 +61,8 @@ public class BaseUserService implements UserService {
 
     @Override
     public List<User> addFriend(long userId, long friendId) {
-        User user = getUserOrThrowError(userId);
-        User friend = getUserOrThrowError(friendId);
+        User user = findUser(userId);
+        User friend = findUser(friendId);
 
         return userFriendsStorage
                 .add(user, friend)
@@ -70,8 +73,8 @@ public class BaseUserService implements UserService {
 
     @Override
     public List<User> removeFriend(long userId, long friendId) {
-        User user = getUserOrThrowError(userId);
-        User friend = getUserOrThrowError(friendId);
+        User user = findUser(userId);
+        User friend = findUser(friendId);
 
         return userFriendsStorage
                 .remove(user, friend)
@@ -82,8 +85,8 @@ public class BaseUserService implements UserService {
 
     @Override
     public List<User> getCommonFriends(long firstUserId, long secondUserId) {
-        User firstUser = getUserOrThrowError(firstUserId);
-        User secondUser = getUserOrThrowError(secondUserId);
+        User firstUser = findUser(firstUserId);
+        User secondUser = findUser(secondUserId);
 
         Set<Long> firstUserFriends = userFriendsStorage.getUserFriends(firstUser);
         Set<Long> secondUserFriends = userFriendsStorage.getUserFriends(secondUser);
@@ -93,13 +96,6 @@ public class BaseUserService implements UserService {
                 .filter(secondUserFriends::contains)
                 .map(userId -> userStorage.getUser(userId).orElse(null))
                 .collect(Collectors.toList());
-    }
-
-    public User getUserOrThrowError(long userId) {
-        return userStorage.getUser(userId).orElseThrow(() -> {
-            log.info(String.format("Ошибка получения пользователя с id: %s. Пользователь не найден", userId));
-            return new NotFoundException(String.format("Пользователь с id %s не найден", userId));
-        });
     }
 
 }

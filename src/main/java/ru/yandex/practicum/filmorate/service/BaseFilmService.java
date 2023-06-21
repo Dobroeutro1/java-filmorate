@@ -27,7 +27,10 @@ public class BaseFilmService implements FilmService {
 
     @Override
     public Film findFilm(long filmId) {
-        return filmStorage.getFilm(filmId).orElse(null);
+        return filmStorage.getFilm(filmId).orElseThrow(() -> {
+            log.info(String.format("Ошибка получения фильма с id: %s. Фильм не найден", filmId));
+            return new NotFoundException(String.format("Фильм с id %s не найден", filmId));
+        });
     }
 
     @Override
@@ -42,13 +45,13 @@ public class BaseFilmService implements FilmService {
 
     @Override
     public void addLike(long filmId, long userId) {
-        Film film = getFilmOrThrowError(filmId);
+        Film film = findFilm(filmId);
         filmUserLikesStorage.add(film, userId);
     }
 
     @Override
     public void removeLike(long filmId, long userId) {
-        Film film = getFilmOrThrowError(filmId);
+        Film film = findFilm(filmId);
         filmUserLikesStorage.remove(film, userId);
     }
 
@@ -60,13 +63,6 @@ public class BaseFilmService implements FilmService {
                 .sorted(Comparator.comparingInt(f -> filmUserLikesStorage.getFilmLikes((Film) f).size()).reversed())
                 .limit(count)
                 .collect(Collectors.toList());
-    }
-
-    private Film getFilmOrThrowError(long filmId) {
-        return filmStorage.getFilm(filmId).orElseThrow(() -> {
-            log.info(String.format("Ошибка получения фильма с id: %s. Фильм не найден", filmId));
-            return new NotFoundException(String.format("Фильм с id %s не найден", filmId));
-        });
     }
 
 }
