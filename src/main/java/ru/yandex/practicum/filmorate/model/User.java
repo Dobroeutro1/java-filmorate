@@ -11,6 +11,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
     private long id;
 
     @NotNull
@@ -27,4 +28,5 @@ public class User {
     @NotNull
     @Past
     private LocalDate birthday;
+
 }
