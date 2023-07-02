@@ -9,7 +9,6 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserFriendsStorage;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -67,7 +66,7 @@ public class BaseUserService implements UserService {
         return userFriendsStorage
                 .add(user, friend)
                 .stream()
-                .map((id) -> userStorage.getUser(id).orElse(null))
+                .map((f) -> userStorage.getUser(f.getId()).orElse(null))
                 .collect(Collectors.toList());
     }
 
@@ -79,7 +78,7 @@ public class BaseUserService implements UserService {
         return userFriendsStorage
                 .remove(user, friend)
                 .stream()
-                .map((id) -> userStorage.getUser(id).orElse(null))
+                .map((f) -> userStorage.getUser(f.getId()).orElse(null))
                 .collect(Collectors.toList());
     }
 
@@ -88,8 +87,8 @@ public class BaseUserService implements UserService {
         User firstUser = findUser(firstUserId);
         User secondUser = findUser(secondUserId);
 
-        Set<Long> firstUserFriends = userFriendsStorage.getUserFriends(firstUser);
-        Set<Long> secondUserFriends = userFriendsStorage.getUserFriends(secondUser);
+        List<Long> firstUserFriends = userFriendsStorage.getUserFriends(firstUser);
+        List<Long> secondUserFriends = userFriendsStorage.getUserFriends(secondUser);
 
         return firstUserFriends
                 .stream()
