@@ -1,8 +1,8 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.dao;
 
 import java.util.List;
 
-public interface Storage<T> {
+public interface Repository<T> {
 
     List<T> getAll();
 

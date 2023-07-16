@@ -50,15 +50,21 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/friends/{friendId}")
-    public List<User> addUserFriend(@PathVariable("userId") long userId, @PathVariable("friendId") long friendId) {
+    public void addUserFriend(@PathVariable("userId") long userId, @PathVariable("friendId") long friendId) {
         log.info("PUT-запрос к эндпоинту: '/users/{userId}/friends/{friendId}'");
-        return service.addFriend(userId, friendId);
+        service.addFriend(userId, friendId);
+    }
+
+    @PutMapping("/{userId}/friends/{friendId}/approve")
+    public void approveUserFriend(@PathVariable("userId") long userId, @PathVariable("friendId") long friendId) {
+        log.info("PUT-запрос к эндпоинту: '/users/{userId}/friends/{friendId}/approve'");
+        service.approveFriend(userId, friendId);
     }
 
     @DeleteMapping("/{userId}/friends/{friendId}")
-    public List<User> removeUserFriend(@PathVariable("userId") long userId, @PathVariable("friendId") long friendId) {
+    public void removeUserFriend(@PathVariable("userId") long userId, @PathVariable("friendId") long friendId) {
         log.info("DELETE-запрос к эндпоинту: '/users/{userId}/friends/{friendId}'");
-        return service.removeFriend(userId, friendId);
+        service.removeFriend(userId, friendId);
     }
 
     @GetMapping("/{userId}/friends/common/{otherId}")

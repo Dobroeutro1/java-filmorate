@@ -1,25 +1,19 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.Getter;
+import lombok.*;
+
+import javax.validation.constraints.NotNull;
 
 @Getter
-public enum MPA {
-    G ("G"),
-    PG ("PG"),
-    PG_THIRTEEN ("PG-13"),
-    R ("R"),
-    NC_SEVENTEEN ("NC-17");
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class MPA {
 
-    private final String title;
+    @NotNull
+    private long id;
 
-    MPA(String title) {
-        this.title = title;
-    }
+    private String name;
 
-    @Override
-    public String toString() {
-        return "MPA{" +
-                "title='" + title + '\'' +
-                '}';
-    }
 }

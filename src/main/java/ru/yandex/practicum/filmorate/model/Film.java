@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
+import org.springframework.lang.Nullable;
 import ru.yandex.practicum.filmorate.validator.ReleaseDateConstraint;
 
 import javax.validation.constraints.*;
@@ -32,7 +33,9 @@ public class Film {
     @Positive
     private int duration;
 
-    private Set<Genre> genres;
-
+    @NotNull
     private MPA mpa;
+
+    @Nullable
+    private Set<Genre> genres;
 }
