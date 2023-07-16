@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.test.context.jdbc.Sql;
 import ru.yandex.practicum.filmorate.dao.impl.UserFriendsRepositoryImpl;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -13,6 +14,7 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
+@Sql(scripts = "/init_users.sql")
 @Import(UserFriendsRepositoryImpl.class)
 public class UserFriendsRepositoryImplTests {
 
