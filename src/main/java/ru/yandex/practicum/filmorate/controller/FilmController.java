@@ -31,6 +31,7 @@ public class FilmController {
 
     @GetMapping("/{filmId}")
     public Film findFilm(@PathVariable("filmId") long filmId) {
+        log.info("GET-запрос к эндпоинту: '/films/{filmId}'");
         return filmService.findFilm(filmId);
     }
 
@@ -60,6 +61,7 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<Film> getMostPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
+        log.info("GET-запрос к эндпоинту: '/films/popular'");
         return filmService.getMostPopularFilms(count);
     }
 

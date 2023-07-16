@@ -3,13 +3,13 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dao.*;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmUserLikesStorage;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -17,52 +17,130 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BaseFilmService implements FilmService {
 
-    private final InMemoryFilmStorage filmStorage;
-    private final InMemoryFilmUserLikesStorage filmUserLikesStorage;
+    private final FilmRepository filmRepository;
+    private final FilmUserLikesRepository filmUserLikesRepository;
+    private final FilmGenresRepository filmGenresRepository;
+    private final MpaRepository mpaRepository;
+    private final GenreRepository genreRepository;
 
     @Override
     public List<Film> getAll() {
-        return filmStorage.getAll();
+        List<Film> films = filmRepository.getAll();
+        Map<Long, Set<Genre>> filmGenresMap = findGenresByFilmIds(films.stream().map(Film::getId)
+                .collect(Collectors.toList()));
+
+        for (Film film : films) {
+            film.setGenres(filmGenresMap.get(film.getId()) != null ? filmGenresMap.get(film.getId()) : new HashSet<>());
+        }
+
+        return films;
     }
 
     @Override
     public Film findFilm(long filmId) {
-        return filmStorage.getFilm(filmId).orElseThrow(() -> {
+        Film film = filmRepository.getFilm(filmId).orElseThrow(() -> {
             log.info(String.format("Ошибка получения фильма с id: %s. Фильм не найден", filmId));
             return new NotFoundException(String.format("Фильм с id %s не найден", filmId));
         });
+
+        Set<Genre> genres = filmGenresRepository.findGenresByFilmId(filmId);
+
+        film.setGenres(genres != null ? genres : new HashSet<>());
+
+        return film;
     }
 
     @Override
     public Film create(Film film) {
-        return filmStorage.create(film);
+        film.setMpa(findMpa(film.getMpa().getId()));
+
+        Set<Genre> genres = new HashSet<>();
+
+        if (film.getGenres() != null) {
+            genres = genreRepository.findByIds(film.getGenres().stream().map(Genre::getId).collect(Collectors.toList()));
+        }
+
+        film.setGenres(genres);
+
+        Film createdFilm = filmRepository.create(film);
+
+        if (!genres.isEmpty()) {
+            filmGenresRepository.setFilmGenres(film.getId(), genres);
+        }
+
+        return createdFilm;
     }
 
     @Override
     public Film update(Film film) {
-        return filmStorage.update(film);
+        findFilm(film.getId());
+        Set<Genre> genres = updateGenres(film);
+        film.setGenres(genres != null ? genres : new HashSet<>());
+        film.setMpa(findMpa(film.getMpa().getId()));
+
+        return filmRepository.update(film);
     }
 
     @Override
     public void addLike(long filmId, long userId) {
-        Film film = findFilm(filmId);
-        filmUserLikesStorage.add(film, userId);
+        filmUserLikesRepository.add(filmId, userId);
     }
 
     @Override
     public void removeLike(long filmId, long userId) {
-        Film film = findFilm(filmId);
-        filmUserLikesStorage.remove(film, userId);
+        filmUserLikesRepository.remove(filmId, userId);
     }
 
     @Override
     public List<Film> getMostPopularFilms(Integer count) {
-        return filmStorage
-                .getAll()
-                .stream()
-                .sorted(Comparator.comparingInt(f -> filmUserLikesStorage.getFilmLikes((Film) f).size()).reversed())
-                .limit(count)
-                .collect(Collectors.toList());
+        List<Film> films = filmUserLikesRepository.getMostPopularFilms(count);
+        Map<Long, Set<Genre>> filmGenresMap = findGenresByFilmIds(films.stream().map(Film::getId)
+                .collect(Collectors.toList()));
+
+        for (Film film : films) {
+            film.setGenres(filmGenresMap.get(film.getId()) != null ? filmGenresMap.get(film.getId()) : new HashSet<>());
+        }
+
+        return films;
+    }
+
+    private MPA findMpa(long mpaId) {
+        return mpaRepository.findById(mpaId).orElseThrow(() -> {
+            log.info(String.format("Ошибка получения MPA с id: %s. MPA не найден", mpaId));
+            return new NotFoundException(String.format("MPA с id %s не найден", mpaId));
+        });
+    }
+
+    private Set<Genre> updateGenres(Film film) {
+        if (film.getGenres() != null) {
+            List<Long> filmGenreIds = film.getGenres().stream().map(Genre::getId).collect(Collectors.toList());
+            Set<Genre> filmGenres = genreRepository.findByIds(filmGenreIds);
+            Set<Genre> filmGenresFromDb = filmGenresRepository.findGenresByFilmId(film.getId());
+            Set<Genre> genresForDelete = filmGenresFromDb.stream()
+                    .filter(genre -> !filmGenreIds.contains(genre.getId())).collect(Collectors.toSet());
+            Set<Genre> genresForAdd = filmGenres.stream()
+                    .filter(genre -> !filmGenresFromDb.contains(genre)).collect(Collectors.toSet());
+
+            if (!genresForDelete.isEmpty()) {
+                filmGenresRepository.deleteFilmGenres(film.getId(), genresForDelete);
+            }
+
+            if (!genresForAdd.isEmpty()) {
+                filmGenresRepository.setFilmGenres(film.getId(), genresForAdd);
+            }
+
+            return filmGenres;
+        }
+
+        return null;
+    }
+
+    private Map<Long, Set<Genre>> findGenresByFilmIds(List<Long> filmIds) {
+        if (filmIds.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        return filmGenresRepository.findGenresByFilmIds(filmIds);
     }
 
 }

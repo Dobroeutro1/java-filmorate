@@ -1,0 +1,56 @@
+CREATE TABLE IF NOT EXISTS USERS
+(
+    id          INT PRIMARY KEY AUTO_INCREMENT,
+    name        VARCHAR(255) NOT NULL,
+    email       VARCHAR(255) NOT NULL,
+    login       VARCHAR(255) NOT NULL,
+    birthday    DATE,
+    CONSTRAINT USER_PK PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS FRIENDS
+(
+    user_id     INT REFERENCES users (id) ON DELETE CASCADE NOT NULL,
+    friend_id   INT REFERENCES users (id) ON DELETE CASCADE NOT NULL,
+    is_approve  BOOLEAN NOT NULL,
+    CONSTRAINT UC_FRIEND UNIQUE (user_id, friend_id)
+);
+
+CREATE TABLE IF NOT EXISTS MPA
+(
+    id    INT PRIMARY KEY AUTO_INCREMENT,
+    name  VARCHAR(255),
+    CONSTRAINT MPA_PK PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS GENRES
+(
+    id    INT PRIMARY KEY AUTO_INCREMENT,
+    name  VARCHAR(255),
+    CONSTRAINT GENRE_PK PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS FILMS
+(
+    id              INT PRIMARY KEY AUTO_INCREMENT,
+    name            VARCHAR(255) NOT NULL,
+    description     VARCHAR(255) NOT NULL,
+    duration        INT NOT NULL,
+    release_date    DATE,
+    mpa_id          INT REFERENCES mpa(id) NOT NULL,
+    CONSTRAINT FILM_PK PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS FILM_LIKES
+(
+    user_id     INT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
+    film_id     INT REFERENCES films(id) ON DELETE CASCADE NOT NULL,
+    CONSTRAINT UC_LIKE UNIQUE (user_id, film_id)
+);
+
+CREATE TABLE IF NOT EXISTS FILM_GENRES
+(
+    film_id     INT REFERENCES films(id) NOT NULL,
+    genre_id    INT REFERENCES genres(id) NOT NULL,
+    CONSTRAINT UC_GENRE UNIQUE (film_id, genre_id)
+);

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate;
+package ru.yandex.practicum.filmorate.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +38,7 @@ class FilmControllerTests {
 
         Set<ConstraintViolation<Film>> validates = validator.validate(film);
 
-        assertEquals(0, validates.size());
+        assertEquals(1, validates.size());
     }
 
     @Test
@@ -67,7 +67,7 @@ class FilmControllerTests {
 
         Set<ConstraintViolation<Film>> validates = validator.validate(film);
 
-        assertEquals(2, validates.size());
+        assertEquals(3, validates.size());
     }
 
     @Test
@@ -139,8 +139,6 @@ class FilmControllerTests {
         film.setReleaseDate(LocalDate.of(2023, Calendar.FEBRUARY, 1));
 
         Set<ConstraintViolation<Film>> validates = validator.validate(film);
-
-        System.out.println("AAAAAAA: " + validates);
 
         assertTrue(validates.size() > 0);
     }
