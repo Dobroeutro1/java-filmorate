@@ -13,4 +13,7 @@ public interface FilmRepository extends Repository<Film> {
 
     void deleteFilm(long filmId);
 
+    List<Film> getSortedByYearFilmsOfDirector(long directorId);
+
+    List<Film> getSortedByLikesFilmsOfDirector(long directorId);
 }

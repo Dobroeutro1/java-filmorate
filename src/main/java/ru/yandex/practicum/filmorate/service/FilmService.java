@@ -22,4 +22,5 @@ public interface FilmService {
 
     List<Film> getMostPopularFilms(Integer count);
 
+    List<Film> getSortedFilmsByDirector(long directorId, String sortField);
 }

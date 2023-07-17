@@ -61,7 +61,7 @@ public class FilmRepositoryImplTests {
     public void testCreateFilm() {
         Film film = new Film(0, "name", "description",
                 LocalDate.of(1967, 3, 25), 100, new MPA(1, "mpa"),
-                new HashSet<>());
+                new HashSet<>(), new HashSet<>());
 
         Film createdFilm = filmRepository.create(film);
 
@@ -80,7 +80,7 @@ public class FilmRepositoryImplTests {
     public void testUpdateFilm() {
         Film film = new Film(1, "name", "description",
                 LocalDate.of(1967, 3, 25), 100, new MPA(1, "mpa"),
-                new HashSet<>());
+                new HashSet<>(), new HashSet<>());
 
         Film updatedFilm = filmRepository.update(film);
 

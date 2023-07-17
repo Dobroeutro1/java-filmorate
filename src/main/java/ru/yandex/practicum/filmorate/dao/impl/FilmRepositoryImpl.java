@@ -99,4 +99,28 @@ public class FilmRepositoryImpl implements FilmRepository {
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
+    @Override
+    public List<Film> getSortedByYearFilmsOfDirector(long directorId) {
+        final String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+                "FROM FILMS F " +
+                "LEFT JOIN MPA M on F.MPA_ID = M.ID " +
+                "LEFT JOIN FILM_DIRECTORS FD ON F.ID = FD.FILM_ID " +
+                "WHERE FD.DIRECTOR_ID = :directorId " +
+                "ORDER BY EXTRACT(YEAR FROM F.RELEASE_DATE)";
+
+        return jdbcOperations.query(sqlQuery, Map.of("directorId", directorId), new FilmRowMapper());
+    }
+
+    @Override
+    public List<Film> getSortedByLikesFilmsOfDirector(long directorId) {
+        final String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+                "FROM FILMS F " +
+                "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                "RIGHT JOIN FILM_DIRECTORS FD ON F.ID = FD.FILM_ID AND FD.DIRECTOR_ID = :directorId " +
+                "LEFT JOIN FILM_LIKES FL ON F.ID = FL.FILM_ID " +
+                "GROUP BY F.ID " +
+                "ORDER BY COUNT(FL.USER_ID) DESC";
+        return jdbcOperations.query(sqlQuery, Map.of("directorId", directorId), new FilmRowMapper());
+    }
+
 }
