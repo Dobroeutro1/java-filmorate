@@ -48,41 +48,29 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User create(User user) {
-        try {
-            if (user.getName().isBlank()) {
-                user.setName(user.getLogin());
-            }
-
-            log.info("Создание пользователя: " + user);
-
-            String sqlQuery = "INSERT INTO USERS (NAME, EMAIL, LOGIN, BIRTHDAY) values (:name, :email, :login, :birthday)";
-
-            user.setId(sqlUpdate(sqlQuery, user));
-
-            return user;
-        } catch (Exception e) {
-            log.error("ERROR: " + e);
-
-            throw new RuntimeException(e);
+        if (user.getName().isBlank()) {
+            user.setName(user.getLogin());
         }
+
+        log.info("Создание пользователя: " + user);
+
+        String sqlQuery = "INSERT INTO USERS (NAME, EMAIL, LOGIN, BIRTHDAY) values (:name, :email, :login, :birthday)";
+
+        user.setId(sqlUpdate(sqlQuery, user));
+
+        return user;
     }
 
     @Override
     public User update(User user) {
-        try {
-            log.info("Изменение пользователя: " + user);
+        log.info("Изменение пользователя: " + user);
 
-            final String sqlQuery = "UPDATE USERS SET NAME = :name, EMAIL = :email, LOGIN = :login, BIRTHDAY = :birthday "
-                    + "WHERE ID = :userId";
+        final String sqlQuery = "UPDATE USERS SET NAME = :name, EMAIL = :email, LOGIN = :login, BIRTHDAY = :birthday "
+                + "WHERE ID = :userId";
 
-            sqlUpdate(sqlQuery, user);
+        sqlUpdate(sqlQuery, user);
 
-            return user;
-        } catch (Exception e) {
-            log.error("ERROR: " + e);
-
-            throw new RuntimeException(e);
-        }
+        return user;
     }
 
     private long sqlUpdate(String sqlQuery, User user) {

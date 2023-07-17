@@ -52,38 +52,26 @@ public class FilmRepositoryImpl implements FilmRepository {
     public Film create(Film film) {
         log.info("Создание фильма: " + film);
 
-        try {
-            final String sqlQuery = "INSERT INTO FILMS (NAME, DESCRIPTION, DURATION, RELEASE_DATE, MPA_ID)"
-                    + "VALUES (:name, :description, :duration, :release_date, :mpa_id)";
+        final String sqlQuery = "INSERT INTO FILMS (NAME, DESCRIPTION, DURATION, RELEASE_DATE, MPA_ID)"
+                + "VALUES (:name, :description, :duration, :release_date, :mpa_id)";
 
-            film.setId(sqlUpdate(sqlQuery, film));
+        film.setId(sqlUpdate(sqlQuery, film));
 
-            return film;
-        } catch (Exception e) {
-            log.error("ERROR: " + e);
-
-            throw new RuntimeException(e);
-        }
+        return film;
     }
 
     @Override
     public Film update(Film film) {
         log.info("Изменение фильма: " + film);
 
-        try {
-            final String sqlQuery = "UPDATE FILMS "
-                    + "SET NAME = :name, DESCRIPTION = :description, DURATION = :duration, "
-                    + "RELEASE_DATE = :release_date, MPA_ID = :mpa_id "
-                    + "WHERE ID = :filmId";
+        final String sqlQuery = "UPDATE FILMS "
+                + "SET NAME = :name, DESCRIPTION = :description, DURATION = :duration, "
+                + "RELEASE_DATE = :release_date, MPA_ID = :mpa_id "
+                + "WHERE ID = :filmId";
 
-            sqlUpdate(sqlQuery, film);
+        sqlUpdate(sqlQuery, film);
 
-            return film;
-        } catch (Exception e) {
-            log.error("ERROR: " + e);
-
-            throw new RuntimeException(e);
-        }
+        return film;
     }
 
     private long sqlUpdate(String sqlQuery, Film film) {

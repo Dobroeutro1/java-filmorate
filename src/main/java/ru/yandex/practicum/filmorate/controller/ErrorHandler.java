@@ -16,7 +16,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
-        log.info("ERROR Validation 400! {}", e.getMessage());
+        log.error("ERROR Validation 400! {}", e.getMessage());
         return new ErrorResponse("Ошибка валидации: " + e.getMessage());
     }
 

@@ -26,14 +26,7 @@ public class BaseFilmService implements FilmService {
     @Override
     public List<Film> getAll() {
         List<Film> films = filmRepository.getAll();
-        Map<Long, Set<Genre>> filmGenresMap = findGenresByFilmIds(films.stream().map(Film::getId)
-                .collect(Collectors.toList()));
-
-        for (Film film : films) {
-            film.setGenres(filmGenresMap.get(film.getId()) != null ? filmGenresMap.get(film.getId()) : new HashSet<>());
-        }
-
-        return films;
+        return getFilms(films);
     }
 
     @Override
@@ -94,14 +87,7 @@ public class BaseFilmService implements FilmService {
     @Override
     public List<Film> getMostPopularFilms(Integer count) {
         List<Film> films = filmUserLikesRepository.getMostPopularFilms(count);
-        Map<Long, Set<Genre>> filmGenresMap = findGenresByFilmIds(films.stream().map(Film::getId)
-                .collect(Collectors.toList()));
-
-        for (Film film : films) {
-            film.setGenres(filmGenresMap.get(film.getId()) != null ? filmGenresMap.get(film.getId()) : new HashSet<>());
-        }
-
-        return films;
+        return getFilms(films);
     }
 
     private MPA findMpa(long mpaId) {
@@ -141,6 +127,17 @@ public class BaseFilmService implements FilmService {
         }
 
         return filmGenresRepository.findGenresByFilmIds(filmIds);
+    }
+
+    private List<Film> getFilms(List<Film> films) {
+        Map<Long, Set<Genre>> filmGenresMap = findGenresByFilmIds(films.stream().map(Film::getId)
+                .collect(Collectors.toList()));
+
+        for (Film film : films) {
+            film.setGenres(filmGenresMap.get(film.getId()) != null ? filmGenresMap.get(film.getId()) : new HashSet<>());
+        }
+
+        return films;
     }
 
 }
