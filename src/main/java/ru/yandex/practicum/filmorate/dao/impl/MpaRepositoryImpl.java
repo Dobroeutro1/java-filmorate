@@ -43,5 +43,4 @@ public class MpaRepositoryImpl implements MpaRepository {
         return Optional.of(mpas.get(0));
     }
 
-
 }

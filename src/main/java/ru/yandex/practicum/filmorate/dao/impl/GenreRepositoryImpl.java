@@ -55,5 +55,4 @@ public class GenreRepositoryImpl implements GenreRepository {
         return new HashSet<>(jdbcOperations.query(sqlQuery, map, new GenreRowMapper()));
     }
 
-
 }

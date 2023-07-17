@@ -39,21 +39,15 @@ public class FilmUserLikesRepositoryImpl implements FilmUserLikesRepository {
 
     @Override
     public void add(long filmId, long userId) {
-        try {
-            final String sqlQuery = "INSERT INTO FILM_LIKES(film_id, user_id) VALUES (:film_id, :user_id)";
+        final String sqlQuery = "INSERT INTO FILM_LIKES(film_id, user_id) VALUES (:film_id, :user_id)";
 
-            MapSqlParameterSource map = new MapSqlParameterSource();
+        MapSqlParameterSource map = new MapSqlParameterSource();
 
-            map.addValue("film_id", filmId);
-            map.addValue("user_id", userId);
+        map.addValue("film_id", filmId);
+        map.addValue("user_id", userId);
 
-            jdbcOperations.update(sqlQuery, map);
-            log.info(String.format("Добавлен лайк фильму %s от пользователя %s", filmId, userId));
-        } catch (Exception e) {
-            log.error("ERROR: " + e);
-
-            throw new RuntimeException(String.format("Пользователь с id %s уже лайкнул фильм с id %s", userId, filmId));
-        }
+        jdbcOperations.update(sqlQuery, map);
+        log.info(String.format("Добавлен лайк фильму %s от пользователя %s", filmId, userId));
     }
 
     @Override
