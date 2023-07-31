@@ -108,8 +108,8 @@ public class BaseFilmService implements FilmService {
     }
 
     @Override
-    public List<Film> getMostPopularFilms(Integer count) {
-        List<Film> films = filmUserLikesRepository.getMostPopularFilms(count);
+    public List<Film> getMostPopularFilms(Integer count, Integer year, Integer genreId) {
+        List<Film> films = filmUserLikesRepository.getFilteredMostPopularFilms(year, genreId, count);
         return getFilms(films);
     }
 
@@ -170,6 +170,7 @@ public class BaseFilmService implements FilmService {
 
             return filmGenres;
         }
+
         return null;
     }
 
@@ -236,4 +237,5 @@ public class BaseFilmService implements FilmService {
 
         return filmDirectorsRepository.findDirectorsByFilmIds(filmIds);
     }
+
 }

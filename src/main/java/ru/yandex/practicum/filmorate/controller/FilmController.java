@@ -64,9 +64,11 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getMostPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
+    public List<Film> getMostPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count,
+                                          @RequestParam(required = false) Integer year,
+                                          @RequestParam(required = false) Integer genreId) {
         log.info("GET-запрос к эндпоинту: '/films/popular'");
-        return filmService.getMostPopularFilms(count);
+        return filmService.getMostPopularFilms(count, year, genreId);
     }
 
     @GetMapping("/common")
