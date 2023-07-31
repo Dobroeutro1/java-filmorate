@@ -11,7 +11,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @JdbcTest
 @Sql(scripts = {"/init_users.sql", "/init_films.sql"})
@@ -23,7 +24,7 @@ public class FilmUserLikesRepositoryImplTests {
 
     @Test
     public void testGetMostPopularFilms() {
-        List<Film> films = filmUserLikesRepository.getMostPopularFilms(10);
+        List<Film> films = filmUserLikesRepository.getFilteredMostPopularFilms(null, null, 10);
 
         assertEquals(4, films.size());
         assertEquals(1, films.get(0).getId());
@@ -40,7 +41,7 @@ public class FilmUserLikesRepositoryImplTests {
     public void testAddLike() {
         filmUserLikesRepository.add(2, 1);
 
-        List<Film> films = filmUserLikesRepository.getMostPopularFilms(10);
+        List<Film> films = filmUserLikesRepository.getFilteredMostPopularFilms(null, null, 10);
 
         assertEquals(4, films.size());
         assertEquals(2, films.get(0).getId());
@@ -57,7 +58,7 @@ public class FilmUserLikesRepositoryImplTests {
     public void testRemoveLike() {
         filmUserLikesRepository.add(2, 1);
 
-        List<Film> films = filmUserLikesRepository.getMostPopularFilms(10);
+        List<Film> films = filmUserLikesRepository.getFilteredMostPopularFilms(null, null, 10);
 
         assertEquals(4, films.size());
         assertEquals(2, films.get(0).getId());
@@ -71,7 +72,8 @@ public class FilmUserLikesRepositoryImplTests {
 
         filmUserLikesRepository.remove(2, 1);
 
-        List<Film> filmsAfterDeleteLike = filmUserLikesRepository.getMostPopularFilms(10);
+        List<Film> filmsAfterDeleteLike = filmUserLikesRepository
+                .getFilteredMostPopularFilms(null, null, 10);
 
         assertEquals(4, filmsAfterDeleteLike.size());
         assertEquals(1, filmsAfterDeleteLike.get(0).getId());
