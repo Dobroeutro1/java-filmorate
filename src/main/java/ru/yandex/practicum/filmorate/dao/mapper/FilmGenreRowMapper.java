@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class FilmGenreRowMapper implements RowMapper<HashMap<Long, Genre>> {
     @Override
-    public HashMap<Long, Genre> mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public HashMap<Long, Genre> m apRow(ResultSet rs, int rowNum) throws SQLException {
         HashMap<Long, Genre> result = new HashMap<>();
 
         result.put(rs.getLong("FILM_ID"), new Genre(rs.getLong("ID"),
