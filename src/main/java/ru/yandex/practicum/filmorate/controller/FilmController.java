@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.BaseFilmService;
 import ru.yandex.practicum.filmorate.service.BaseUserService;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 @Slf4j
@@ -45,6 +43,12 @@ public class FilmController {
     public Film update(@Valid @RequestBody Film film) {
         log.info("PUT-запрос к эндпоинту: '/films'");
         return filmService.update(film);
+    }
+
+    @DeleteMapping("/{filmId}")
+    public void delete(@PathVariable("filmId") long filmId) {
+        log.info("DELETE-запрос к эндпоинту: '/films/{filmId}");
+        filmService.delete(filmId);
     }
 
     @PutMapping("/{filmId}/like/{userId}")

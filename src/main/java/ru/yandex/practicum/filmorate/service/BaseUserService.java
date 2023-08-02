@@ -44,6 +44,12 @@ public class BaseUserService implements UserService {
     }
 
     @Override
+    public void delete(long id) {
+        findUser(id);
+        userRepository.deleteUser(id);
+    }
+
+    @Override
     public List<User> getUserFriends(long userId) {
         User user = userRepository.getUser(userId).orElseThrow(() -> {
             log.info(String.format("Ошибка получения пользователя с id: %s. Пользователь не найден", userId));

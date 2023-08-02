@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.dao.mapper.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -71,6 +72,14 @@ public class UserRepositoryImpl implements UserRepository {
         sqlUpdate(sqlQuery, user);
 
         return user;
+    }
+
+    @Override
+    public void deleteUser(long userId) {
+        log.info("Удаление пользователя с id: " + userId);
+        final String sqlQuery = "DELETE FROM USERS " +
+                "WHERE ID = :userId";
+        jdbcOperations.update(sqlQuery, Map.of("userId", userId));
     }
 
     private long sqlUpdate(String sqlQuery, User user) {

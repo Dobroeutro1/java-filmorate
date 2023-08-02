@@ -11,4 +11,6 @@ public interface UserRepository extends Repository<User> {
 
     Optional<User> getUser(long userId);
 
+    void deleteUser(long userId);
+
 }

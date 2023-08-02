@@ -75,6 +75,12 @@ public class BaseFilmService implements FilmService {
     }
 
     @Override
+    public void delete(long filmId) {
+        findFilm(filmId);
+        filmRepository.deleteFilm(filmId);
+    }
+
+    @Override
     public void addLike(long filmId, long userId) {
         filmUserLikesRepository.add(filmId, userId);
     }

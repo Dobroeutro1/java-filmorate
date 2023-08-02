@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS USERS
 
 CREATE TABLE IF NOT EXISTS FRIENDS
 (
-    user_id     INT REFERENCES users (id) ON DELETE CASCADE NOT NULL,
-    friend_id   INT REFERENCES users (id) ON DELETE CASCADE NOT NULL,
+    user_id     INT REFERENCES users (id) ON DELETE CASCADE,
+    friend_id   INT REFERENCES users (id) ON DELETE CASCADE,
     is_approve  BOOLEAN NOT NULL,
     CONSTRAINT UC_FRIEND UNIQUE (user_id, friend_id)
 );
@@ -43,14 +43,14 @@ CREATE TABLE IF NOT EXISTS FILMS
 
 CREATE TABLE IF NOT EXISTS FILM_LIKES
 (
-    user_id     INT REFERENCES users(id) ON DELETE CASCADE NOT NULL,
-    film_id     INT REFERENCES films(id) ON DELETE CASCADE NOT NULL,
+    user_id     INT REFERENCES users(id) ON DELETE CASCADE,
+    film_id     INT REFERENCES films(id) ON DELETE CASCADE,
     CONSTRAINT UC_LIKE UNIQUE (user_id, film_id)
 );
 
 CREATE TABLE IF NOT EXISTS FILM_GENRES
 (
-    film_id     INT REFERENCES films(id) NOT NULL,
+    film_id     INT REFERENCES films(id) ON DELETE CASCADE,
     genre_id    INT REFERENCES genres(id) NOT NULL,
     CONSTRAINT UC_GENRE UNIQUE (film_id, genre_id)
 );
