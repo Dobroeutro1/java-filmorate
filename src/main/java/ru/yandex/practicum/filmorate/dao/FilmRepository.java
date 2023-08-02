@@ -11,4 +11,6 @@ public interface FilmRepository extends Repository<Film> {
 
     Optional<Film> getFilm(long filmId);
 
+    void deleteFilm(long filmId);
+
 }

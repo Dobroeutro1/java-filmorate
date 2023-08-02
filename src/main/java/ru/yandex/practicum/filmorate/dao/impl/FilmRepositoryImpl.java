@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.dao.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -72,6 +73,14 @@ public class FilmRepositoryImpl implements FilmRepository {
         sqlUpdate(sqlQuery, film);
 
         return film;
+    }
+
+    @Override
+    public void deleteFilm(long filmId) {
+        log.info("Удаление фильма с id: " + filmId);
+        final String sqlQuery = "DELETE FROM FILMS " +
+                "WHERE ID = :filmId";
+        jdbcOperations.update(sqlQuery, Map.of("filmId", filmId));
     }
 
     private long sqlUpdate(String sqlQuery, Film film) {
