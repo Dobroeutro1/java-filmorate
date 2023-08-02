@@ -21,19 +21,46 @@ public class FilmUserLikesRepositoryImpl implements FilmUserLikesRepository {
     }
 
     @Override
-    public List<Film> getMostPopularFilms(Integer count) {
-        final String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+    public List<Film> getFilteredMostPopularFilms(Integer year, Integer genreId, Integer count) {
+        StringBuilder sqlQuery = new StringBuilder(
+                "SELECT F.*, M.NAME AS MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
+                        "LEFT JOIN FILM_LIKES FL on F.ID = FL.FILM_ID ");
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+        map.addValue("count", count);
+
+        if (genreId != null) {
+            map.addValue("genreId", genreId);
+            sqlQuery.append("INNER JOIN FILM_GENRES FG on F.ID = FG.FILM_ID AND FG.GENRE_ID = :genreId ");
+        }
+        if (year != null) {
+            map.addValue("year", year);
+            sqlQuery.append("WHERE :year = EXTRACT(YEAR FROM F.RELEASE_DATE) ");
+        }
+        sqlQuery.append("GROUP BY F.ID ORDER BY COUNT(FL.USER_ID) DESC LIMIT :count");
+
+        return jdbcOperations.query(sqlQuery.toString(), map, new FilmRowMapper());
+    }
+
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        List<Film> userFilms = getLikedFilmsByUser(userId);
+        userFilms.retainAll(getLikedFilmsByUser(friendId));
+        return userFilms;
+    }
+
+    @Override
+    public List<Film> getLikedFilmsByUser(long userId) {
+        String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
                 "FROM FILMS F " +
                 "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
                 "LEFT JOIN FILM_LIKES FL on F.ID = FL.FILM_ID " +
+                "WHERE fl.USER_ID = :user_id " +
                 "GROUP BY F.ID " +
-                "ORDER BY COUNT(FL.USER_ID) DESC " +
-                "LIMIT :count";
-
+                "ORDER BY COUNT(FL.USER_ID) DESC ";
         MapSqlParameterSource map = new MapSqlParameterSource();
-
-        map.addValue("count", count);
-
+        map.addValue("user_id", userId);
         return jdbcOperations.query(sqlQuery, map, new FilmRowMapper());
     }
 

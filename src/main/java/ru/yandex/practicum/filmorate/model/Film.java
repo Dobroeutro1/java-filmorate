@@ -4,13 +4,17 @@ import lombok.*;
 import org.springframework.lang.Nullable;
 import ru.yandex.practicum.filmorate.validator.ReleaseDateConstraint;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Set;
 
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 public class Film {
@@ -38,4 +42,7 @@ public class Film {
 
     @Nullable
     private Set<Genre> genres;
+
+    @Nullable
+    private Set<Director> directors;
 }

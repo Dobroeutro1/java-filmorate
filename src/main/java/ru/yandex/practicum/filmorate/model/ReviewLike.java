@@ -7,14 +7,16 @@ import javax.validation.constraints.NotNull;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class MPA {
+public class ReviewLike {
+
+    private long reviewId;
 
     @NotNull
-    private long id;
+    private Boolean isLike;
 
-    private String name;
+    @NotNull
+    private Long userId;
 
 }
