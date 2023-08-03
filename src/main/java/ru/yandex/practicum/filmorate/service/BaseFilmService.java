@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.*;
 import ru.yandex.practicum.filmorate.enums.EventType;
@@ -99,8 +100,11 @@ public class BaseFilmService implements FilmService {
 
     @Override
     public void addLike(long filmId, long userId) {
-        filmUserLikesRepository.add(filmId, userId);
-        feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.ADD);
+        try {
+            filmUserLikesRepository.add(filmId, userId);
+            feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.ADD);
+        } catch (DuplicateKeyException ignored) {
+        }
     }
 
     @Override
