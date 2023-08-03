@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.ReviewLikeRepository;
 import ru.yandex.practicum.filmorate.dao.ReviewRepository;
+import ru.yandex.practicum.filmorate.enums.EventType;
+import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
@@ -18,9 +20,11 @@ public class BaseReviewService implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewLikeRepository reviewLikeRepository;
+    private final FeedService feedService;
 
     final BaseUserService userService;
     final BaseFilmService filmService;
+
 
     @Override
     public List<Review> getAll(Long filmId, Integer count) {
@@ -39,25 +43,30 @@ public class BaseReviewService implements ReviewService {
     public Review create(Review review) {
         userService.findUser(review.getUserId());
         filmService.findFilm(review.getFilmId());
-
-        return reviewRepository.create(review);
+        long reviewId = reviewRepository.create(review).getReviewId();
+        Review savedReview = getReview(reviewId);
+        feedService.saveFeed(savedReview.getUserId(), savedReview.getReviewId(), EventType.REVIEW, OperationType.ADD);
+        return savedReview;
     }
 
     @Override
     public Review update(Review review) {
         userService.findUser(review.getUserId());
         filmService.findFilm(review.getFilmId());
-
         getReview(review.getReviewId());
-
         reviewRepository.update(review);
-
-        return getReview(review.getReviewId());
+        getReview(review.getReviewId());
+        reviewRepository.update(review);
+        Review savedReview = getReview(review.getReviewId());
+        feedService.saveFeed(savedReview.getUserId(), savedReview.getReviewId(), EventType.REVIEW, OperationType.UPDATE);
+        return savedReview;
     }
 
     @Override
     public void remove(long reviewId) {
+        Review review = getReview(reviewId);
         reviewRepository.remove(reviewId);
+        feedService.saveFeed(review.getUserId(), review.getReviewId(), EventType.REVIEW, OperationType.REMOVE);
     }
 
     @Override

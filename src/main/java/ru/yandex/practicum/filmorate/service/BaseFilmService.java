@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.*;
+import ru.yandex.practicum.filmorate.enums.EventType;
+import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
 
@@ -22,6 +24,7 @@ public class BaseFilmService implements FilmService {
     private final GenreRepository genreRepository;
     private final DirectorRepository directorRepository;
     private final FilmDirectorsRepository filmDirectorsRepository;
+    private final FeedService feedService;
 
     @Override
     public List<Film> getAll() {
@@ -97,10 +100,12 @@ public class BaseFilmService implements FilmService {
     @Override
     public void addLike(long filmId, long userId) {
         filmUserLikesRepository.add(filmId, userId);
+        feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.ADD);
     }
 
     @Override
     public void removeLike(long filmId, long userId) {
+        feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.REMOVE);
         filmUserLikesRepository.remove(filmId, userId);
     }
 
@@ -128,7 +133,6 @@ public class BaseFilmService implements FilmService {
             default:
                 return null;
         }
-
         return getFilms(films);
     }
 
@@ -199,7 +203,6 @@ public class BaseFilmService implements FilmService {
         } else if (!filmDirectorsFromDb.isEmpty()) {
             filmDirectorsRepository.deleteFilmDirectors(film.getId(), filmDirectorsFromDb);
         }
-
         return null;
     }
 

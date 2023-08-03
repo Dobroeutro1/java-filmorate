@@ -55,21 +55,18 @@ public class FilmRepositoryImpl implements FilmRepository {
                 + "VALUES (:name, :description, :duration, :release_date, :mpa_id)";
 
         film.setId(sqlUpdate(sqlQuery, film));
-
         return film;
     }
 
     @Override
     public Film update(Film film) {
         log.info("Изменение фильма: " + film);
-
         final String sqlQuery = "UPDATE FILMS "
                 + "SET NAME = :name, DESCRIPTION = :description, DURATION = :duration, "
                 + "RELEASE_DATE = :release_date, MPA_ID = :mpa_id "
                 + "WHERE ID = :filmId";
 
         sqlUpdate(sqlQuery, film);
-
         return film;
     }
 
@@ -79,22 +76,6 @@ public class FilmRepositoryImpl implements FilmRepository {
         final String sqlQuery = "DELETE FROM FILMS " +
                 "WHERE ID = :filmId";
         jdbcOperations.update(sqlQuery, Map.of("filmId", filmId));
-    }
-
-    private long sqlUpdate(String sqlQuery, Film film) {
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        MapSqlParameterSource map = new MapSqlParameterSource();
-
-        map.addValue("name", film.getName());
-        map.addValue("description", film.getDescription());
-        map.addValue("duration", film.getDuration());
-        map.addValue("release_date", film.getReleaseDate());
-        map.addValue("mpa_id", film.getMpa().getId());
-        map.addValue("filmId", film.getId());
-
-        jdbcOperations.update(sqlQuery, map, keyHolder);
-
-        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     @Override
@@ -148,6 +129,21 @@ public class FilmRepositoryImpl implements FilmRepository {
         map.addValue("query", "%" + query + "%");
 
         return jdbcOperations.query(sqlQuery.toString(), map, new FilmRowMapper());
+    }
+
+    private long sqlUpdate(String sqlQuery, Film film) {
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        MapSqlParameterSource map = new MapSqlParameterSource();
+        map.addValue("name", film.getName());
+        map.addValue("description", film.getDescription());
+        map.addValue("duration", film.getDuration());
+        map.addValue("release_date", film.getReleaseDate());
+        map.addValue("mpa_id", film.getMpa().getId());
+        map.addValue("filmId", film.getId());
+
+        jdbcOperations.update(sqlQuery, map, keyHolder);
+
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
 }
