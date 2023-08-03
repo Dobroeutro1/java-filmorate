@@ -22,4 +22,6 @@ public interface FilmService {
 
     List<Film> getMostPopularFilms(Integer count);
 
+    List<Film> getCommonFilms(long userId, long friendId);
+
 }

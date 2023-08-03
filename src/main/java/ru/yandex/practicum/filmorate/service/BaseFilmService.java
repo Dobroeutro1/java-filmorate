@@ -96,6 +96,12 @@ public class BaseFilmService implements FilmService {
         return getFilms(films);
     }
 
+    @Override
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        List<Film> films = filmUserLikesRepository.getCommonFilmsTest(userId, friendId);
+        return getFilms(films);
+    }
+
     private MPA findMpa(long mpaId) {
         return mpaRepository.findById(mpaId).orElseThrow(() -> {
             log.info(String.format("Ошибка получения MPA с id: %s. MPA не найден", mpaId));
