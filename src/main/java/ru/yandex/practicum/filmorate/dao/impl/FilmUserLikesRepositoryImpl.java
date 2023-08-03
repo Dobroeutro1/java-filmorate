@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.dao.FilmUserLikesRepository;
 import ru.yandex.practicum.filmorate.dao.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -38,30 +39,29 @@ public class FilmUserLikesRepositoryImpl implements FilmUserLikesRepository {
     }
 
     public List<Film> getCommonFilms(long userId, long friendId) {
-        final String sqlQuery = "SELECT f.ID, f.NAME, f.DESCRIPTION, f.DURATION, f.RELEASE_DATE ,f.MPA_ID," +
-                "m.NAME AS MPA_NAME " +
-                "FROM FILMS f " +
-                "RIGHT JOIN (SELECT f.ID,count(fl.user_id) AS likes FROM FILMS f " +
-                "INNER JOIN FILM_LIKES fl ON f.ID = fl.FILM_ID " +
-                "WHERE f.ID = (" +
-                "SELECT f1.ID FROM films f1 " +
-                "INNER JOIN FILM_LIKES fl1 ON f1.ID = fl1.FILM_ID " +
-                "WHERE fl1.USER_ID = :user_id) AND f.ID = " +
-                "( " +
-                "SELECT f2.id FROM films f2 " +
-                "INNER JOIN FILM_LIKES fl2 ON f2.id = fl2.FILM_ID " +
-                "WHERE fl2.USER_ID = :friend_id) " +
-                "GROUP BY f.id ) AS rule1 ON f.id = rule1.id " +
-                "LEFT JOIN mpa m ON f.MPA_ID = m.ID " +
-                "GROUP BY f.ID " +
-                "ORDER BY rule1.likes DESC ";
-
+        String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+                "FROM FILMS F " +
+                "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
+                "LEFT JOIN FILM_LIKES FL on F.ID = FL.FILM_ID " +
+                "WHERE fl.USER_ID = :user_id " +
+                "GROUP BY F.ID " +
+                "ORDER BY COUNT(FL.USER_ID) DESC ";
         MapSqlParameterSource map = new MapSqlParameterSource();
-
         map.addValue("user_id", userId);
-        map.addValue("friend_id", friendId);
+        List<Film> userFilms = new ArrayList<>(jdbcOperations.query(sqlQuery, map, new FilmRowMapper()));
 
-        return jdbcOperations.query(sqlQuery, map, new FilmRowMapper());
+        sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+                "FROM FILMS F " +
+                "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
+                "LEFT JOIN FILM_LIKES FL on F.ID = FL.FILM_ID " +
+                "WHERE fl.USER_ID = :friend_id " +
+                "GROUP BY F.ID " +
+                "ORDER BY COUNT(FL.USER_ID) DESC ";
+        map = new MapSqlParameterSource();
+        map.addValue("friend_id", friendId);
+        List<Film> friendFilms = new ArrayList<>(jdbcOperations.query(sqlQuery, map, new FilmRowMapper()));
+        userFilms.retainAll(friendFilms);
+        return userFilms;
     }
 
     @Override
