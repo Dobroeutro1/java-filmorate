@@ -37,6 +37,26 @@ public class FilmUserLikesRepositoryImpl implements FilmUserLikesRepository {
         return jdbcOperations.query(sqlQuery, map, new FilmRowMapper());
     }
 
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        List<Film> userFilms = getLikedFilmsByUser(userId);
+        userFilms.retainAll(getLikedFilmsByUser(friendId));
+        return userFilms;
+    }
+
+    @Override
+    public List<Film> getLikedFilmsByUser(long userId) {
+        String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+                "FROM FILMS F " +
+                "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
+                "LEFT JOIN FILM_LIKES FL on F.ID = FL.FILM_ID " +
+                "WHERE fl.USER_ID = :user_id " +
+                "GROUP BY F.ID " +
+                "ORDER BY COUNT(FL.USER_ID) DESC ";
+        MapSqlParameterSource map = new MapSqlParameterSource();
+        map.addValue("user_id", userId);
+        return jdbcOperations.query(sqlQuery, map, new FilmRowMapper());
+    }
+
     @Override
     public void add(long filmId, long userId) {
         final String sqlQuery = "INSERT INTO FILM_LIKES(film_id, user_id) VALUES (:film_id, :user_id)";
