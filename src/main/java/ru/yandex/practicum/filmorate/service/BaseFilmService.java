@@ -98,7 +98,7 @@ public class BaseFilmService implements FilmService {
 
     @Override
     public List<Film> getCommonFilms(long userId, long friendId) {
-        List<Film> films = filmUserLikesRepository.getCommonFilmsTest(userId, friendId);
+        List<Film> films = filmUserLikesRepository.getCommonFilms(userId, friendId);
         return getFilms(films);
     }
 
