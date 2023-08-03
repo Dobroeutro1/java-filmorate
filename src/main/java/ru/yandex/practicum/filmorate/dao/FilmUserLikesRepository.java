@@ -12,4 +12,8 @@ public interface FilmUserLikesRepository {
 
     void remove(long filmId, long userId);
 
+    List<Film> getCommonFilms(long userId, long friendId);
+
+    List<Film> getLikedFilmsByUser(long userId);
+
 }

@@ -135,6 +135,12 @@ public class BaseFilmService implements FilmService {
         return getFilms(films);
     }
 
+    @Override
+    public List<Film> getCommonFilms(long userId, long friendId) {
+        List<Film> films = filmUserLikesRepository.getCommonFilms(userId, friendId);
+        return getFilms(films);
+    }
+
     private MPA findMpa(long mpaId) {
         return mpaRepository.findById(mpaId).orElseThrow(() -> {
             log.info(String.format("Ошибка получения MPA с id: %s. MPA не найден", mpaId));
@@ -199,7 +205,8 @@ public class BaseFilmService implements FilmService {
         return null;
     }
 
-    private List<Film> getFilms(List<Film> films) {
+    @Override
+    public List<Film> getFilms(List<Film> films) {
         Map<Long, Set<Genre>> filmGenresMap = findGenresByFilmIds(films.stream().map(Film::getId)
                 .collect(Collectors.toList()));
         Map<Long, Set<Director>> filmDirectorsMap = findDirectorsByFilmIds(films.stream().map(Film::getId)
