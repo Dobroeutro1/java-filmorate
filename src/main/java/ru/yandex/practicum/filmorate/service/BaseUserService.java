@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.UserFriendsRepository;
 import ru.yandex.practicum.filmorate.dao.UserRepository;
+import ru.yandex.practicum.filmorate.enums.EventType;
+import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -17,6 +19,7 @@ public class BaseUserService implements UserService {
 
     private final UserRepository userRepository;
     private final UserFriendsRepository userFriendsRepository;
+    private final FeedService feedService;
 
     @Override
     public List<User> getAll() {
@@ -63,7 +66,7 @@ public class BaseUserService implements UserService {
     public void addFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-
+        feedService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.ADD);
         userFriendsRepository.add(user.getId(), friend.getId());
     }
 
@@ -79,7 +82,7 @@ public class BaseUserService implements UserService {
     public void removeFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-
+        feedService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.REMOVE);
         userFriendsRepository.remove(user.getId(), friend.getId());
     }
 
