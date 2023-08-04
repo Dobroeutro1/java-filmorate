@@ -10,10 +10,10 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 public class Feed {
     private long eventId;
-    private long entityId;
     private long timestamp;
     private long userId;
     private String eventType;
     private String operation;
+    private long entityId;
 
 }

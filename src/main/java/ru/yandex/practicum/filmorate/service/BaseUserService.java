@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.model.Feed;
 
 import java.util.List;
 
@@ -42,7 +43,6 @@ public class BaseUserService implements UserService {
     @Override
     public User update(User user) {
         findUser(user.getId());
-
         return userRepository.update(user);
     }
 
@@ -58,7 +58,6 @@ public class BaseUserService implements UserService {
             log.info(String.format("Ошибка получения пользователя с id: %s. Пользователь не найден", userId));
             return new NotFoundException(String.format("Пользователь с id %s не найден", userId));
         });
-
         return userFriendsRepository.getUserFriends(user);
     }
 
@@ -74,7 +73,6 @@ public class BaseUserService implements UserService {
     public void approveFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-
         userFriendsRepository.approve(user.getId(), friend.getId());
     }
 
@@ -90,8 +88,12 @@ public class BaseUserService implements UserService {
     public List<User> getCommonFriends(long firstUserId, long secondUserId) {
         User firstUser = findUser(firstUserId);
         User secondUser = findUser(secondUserId);
-
         return userFriendsRepository.getCommonFriends(firstUser.getId(), secondUser.getId());
     }
 
+    @Override
+    public List<Feed> getNewsFeed (long userId) {
+        findUser(userId);
+        return feedService.getNewsFeed(userId);
+    }
 }

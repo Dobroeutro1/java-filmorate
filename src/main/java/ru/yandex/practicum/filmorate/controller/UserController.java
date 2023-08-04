@@ -83,9 +83,9 @@ public class UserController {
     }
 
     @GetMapping("/{id}/feed")
-    public List<Feed> getFeed(@PathVariable long id) {
+    public List<Feed> getFeed(@PathVariable("id") long id) {
         log.info("GET-запрос к эндпоинту: '/user/{id}/feed");
-        return feedService.getNewsFeed(id);
+        return service.getNewsFeed(id);
     }
 
 }

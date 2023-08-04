@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.model.Feed;
 
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -17,7 +16,7 @@ import java.util.List;
 @Repository("FeedRepository")
 public class FeedRepositoryImpl implements FeedRepository {
 
-private final JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public FeedRepositoryImpl(JdbcTemplate jdbcTemplate) {
@@ -58,5 +57,4 @@ private final JdbcTemplate jdbcTemplate;
                 .entityId(resultSet.getLong("entity_id"))
                 .build();
     }
-
 }
