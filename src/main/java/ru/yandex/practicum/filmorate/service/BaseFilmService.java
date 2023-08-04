@@ -136,7 +136,6 @@ public class BaseFilmService implements FilmService {
             default:
                 return null;
         }
-
         return getFilms(films);
     }
 
@@ -200,7 +199,6 @@ public class BaseFilmService implements FilmService {
         } else if (!filmDirectorsFromDb.isEmpty()) {
             filmDirectorsRepository.deleteFilmDirectors(film.getId(), filmDirectorsFromDb);
         }
-
         return null;
     }
 
