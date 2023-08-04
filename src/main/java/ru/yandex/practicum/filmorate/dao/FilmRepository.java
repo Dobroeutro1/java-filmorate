@@ -11,4 +11,9 @@ public interface FilmRepository extends Repository<Film> {
 
     Optional<Film> getFilm(long filmId);
 
+    void deleteFilm(long filmId);
+
+    List<Film> getSortedByYearFilmsOfDirector(long directorId);
+
+    List<Film> getSortedByLikesFilmsOfDirector(long directorId);
 }

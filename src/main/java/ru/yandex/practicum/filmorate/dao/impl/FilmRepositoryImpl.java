@@ -11,6 +11,7 @@ import ru.yandex.practicum.filmorate.dao.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -74,6 +75,14 @@ public class FilmRepositoryImpl implements FilmRepository {
         return film;
     }
 
+    @Override
+    public void deleteFilm(long filmId) {
+        log.info("Удаление фильма с id: " + filmId);
+        final String sqlQuery = "DELETE FROM FILMS " +
+                "WHERE ID = :filmId";
+        jdbcOperations.update(sqlQuery, Map.of("filmId", filmId));
+    }
+
     private long sqlUpdate(String sqlQuery, Film film) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource map = new MapSqlParameterSource();
@@ -88,6 +97,30 @@ public class FilmRepositoryImpl implements FilmRepository {
         jdbcOperations.update(sqlQuery, map, keyHolder);
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    @Override
+    public List<Film> getSortedByYearFilmsOfDirector(long directorId) {
+        final String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+                "FROM FILMS F " +
+                "LEFT JOIN MPA M on F.MPA_ID = M.ID " +
+                "LEFT JOIN FILM_DIRECTORS FD ON F.ID = FD.FILM_ID " +
+                "WHERE FD.DIRECTOR_ID = :directorId " +
+                "ORDER BY EXTRACT(YEAR FROM F.RELEASE_DATE)";
+
+        return jdbcOperations.query(sqlQuery, Map.of("directorId", directorId), new FilmRowMapper());
+    }
+
+    @Override
+    public List<Film> getSortedByLikesFilmsOfDirector(long directorId) {
+        final String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
+                "FROM FILMS F " +
+                "LEFT JOIN MPA M ON F.MPA_ID = M.ID " +
+                "RIGHT JOIN FILM_DIRECTORS FD ON F.ID = FD.FILM_ID AND FD.DIRECTOR_ID = :directorId " +
+                "LEFT JOIN FILM_LIKES FL ON F.ID = FL.FILM_ID " +
+                "GROUP BY F.ID " +
+                "ORDER BY COUNT(FL.USER_ID) DESC";
+        return jdbcOperations.query(sqlQuery, Map.of("directorId", directorId), new FilmRowMapper());
     }
 
 }

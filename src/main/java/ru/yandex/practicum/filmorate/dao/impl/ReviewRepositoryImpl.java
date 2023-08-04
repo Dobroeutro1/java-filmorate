@@ -96,7 +96,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     @Override
-    public void addLike(long reviewId, long userId) {
+    public void addRating(long reviewId, long userId) {
         final String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL + 1 WHERE ID = :review_id";
 
         MapSqlParameterSource map = new MapSqlParameterSource();
@@ -104,11 +104,11 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         map.addValue("review_id", reviewId);
 
         jdbcOperations.update(sqlQuery, map);
-        log.info(String.format("Добавлен лайк отзыву с id %s", reviewId));
+        log.info(String.format("Добавлена оценка с id %s от пользователя с id %s", reviewId, userId));
     }
 
     @Override
-    public void removeLike(long reviewId, long userId) {
+    public void removeRating(long reviewId, long userId) {
         final String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL - 1 WHERE ID = :review_id";
 
         MapSqlParameterSource map = new MapSqlParameterSource();
@@ -116,31 +116,7 @@ public class ReviewRepositoryImpl implements ReviewRepository {
         map.addValue("review_id", reviewId);
 
         jdbcOperations.update(sqlQuery, map);
-        log.info(String.format("Убран лайк отзыву с id %s", reviewId));
-    }
-
-    @Override
-    public void addDislike(long reviewId, long userId) {
-        final String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL - 1 WHERE ID = :review_id";
-
-        MapSqlParameterSource map = new MapSqlParameterSource();
-
-        map.addValue("review_id", reviewId);
-
-        jdbcOperations.update(sqlQuery, map);
-        log.info(String.format("Добавлен дизлайк отзыву с id %s", reviewId));
-    }
-
-    @Override
-    public void removeDislike(long reviewId, long userId) {
-        final String sqlQuery = "UPDATE REVIEWS SET USEFUL = USEFUL + 1 WHERE ID = :review_id";
-
-        MapSqlParameterSource map = new MapSqlParameterSource();
-
-        map.addValue("review_id", reviewId);
-
-        jdbcOperations.update(sqlQuery, map);
-        log.info(String.format("Убран дизлайк отзыву с id %s", reviewId));
+        log.info(String.format("Убрана оценка отзыву с id %s от пользователя с id %s", reviewId, userId));
     }
 
     private long sqlUpdate(String sqlQuery, Review review) {

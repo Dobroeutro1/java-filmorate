@@ -4,13 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.service.BaseFilmService;
 import ru.yandex.practicum.filmorate.service.BaseUserService;
 
 import javax.validation.Valid;
-
 import java.util.List;
 
 @Slf4j
@@ -47,6 +45,12 @@ public class FilmController {
         return filmService.update(film);
     }
 
+    @DeleteMapping("/{filmId}")
+    public void delete(@PathVariable("filmId") long filmId) {
+        log.info("DELETE-запрос к эндпоинту: '/films/{filmId}");
+        filmService.delete(filmId);
+    }
+
     @PutMapping("/{filmId}/like/{userId}")
     public void addLike(@PathVariable("filmId") long filmId, @PathVariable("userId") long userId) {
         log.info("PUT-запрос к эндпоинту: '/films/{filmId}/like/{userId}'");
@@ -63,6 +67,12 @@ public class FilmController {
     public List<Film> getMostPopularFilms(@RequestParam(defaultValue = "10", required = false) Integer count) {
         log.info("GET-запрос к эндпоинту: '/films/popular'");
         return filmService.getMostPopularFilms(count);
+    }
+
+    @GetMapping("/director/{directorId}")
+    public List<Film> getSortedFilms(@PathVariable("directorId") long directorId, @RequestParam String sortBy) {
+        log.info("GET-запрос к эндпоинту: 'films/director/{directorId}'");
+        return filmService.getSortedFilmsByDirector(directorId, sortBy);
     }
 
 }

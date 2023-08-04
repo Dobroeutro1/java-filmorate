@@ -20,6 +20,9 @@ public class BaseReviewService implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewLikeRepository reviewLikeRepository;
+
+    final BaseUserService userService;
+    final BaseFilmService filmService;
     private final FeedService feedService;
 
     @Override
@@ -67,7 +70,7 @@ public class BaseReviewService implements ReviewService {
             throw new AlreadyExistException(String.format("Пользователь с id %s уже поставил оценку фильму", userId));
         }
 
-        reviewRepository.addLike(userId, reviewId);
+        reviewRepository.addRating(userId, reviewId);
         reviewLikeRepository.add(reviewId, userId, true);
     }
 
@@ -79,7 +82,7 @@ public class BaseReviewService implements ReviewService {
             throw new AlreadyExistException(String.format("Пользователь с id %s не ставил оценку фильму", userId));
         }
 
-        reviewRepository.removeLike(userId, reviewId);
+        reviewRepository.removeRating(userId, reviewId);
         reviewLikeRepository.remove(reviewId, userId);
     }
 
@@ -91,7 +94,7 @@ public class BaseReviewService implements ReviewService {
             throw new AlreadyExistException(String.format("Пользователь с id %s уже поставил оценку фильму", userId));
         }
 
-        reviewRepository.addDislike(userId, reviewId);
+        reviewRepository.removeRating(userId, reviewId);
         reviewLikeRepository.add(reviewId, userId, false);
     }
 
@@ -103,7 +106,7 @@ public class BaseReviewService implements ReviewService {
             throw new AlreadyExistException(String.format("Пользователь с id %s не ставил оценку фильму", userId));
         }
 
-        reviewRepository.removeDislike(userId, reviewId);
+        reviewRepository.addRating(userId, reviewId);
         reviewLikeRepository.remove(reviewId, userId);
     }
 

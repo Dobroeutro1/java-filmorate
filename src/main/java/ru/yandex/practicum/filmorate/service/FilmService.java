@@ -14,10 +14,13 @@ public interface FilmService {
 
     Film update(Film film);
 
+    void delete(long id);
+
     void addLike(long filmId, long userId);
 
     void removeLike(long filmId, long userId);
 
     List<Film> getMostPopularFilms(Integer count);
 
+    List<Film> getSortedFilmsByDirector(long directorId, String sortField);
 }

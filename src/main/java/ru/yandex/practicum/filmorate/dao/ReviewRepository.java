@@ -17,12 +17,8 @@ public interface ReviewRepository {
 
     void remove(long reviewId);
 
-    void addLike(long userId, long reviewId);
+    void addRating(long userId, long reviewId);
 
-    void removeLike(long userId, long reviewId);
-
-    void addDislike(long userId, long reviewId);
-
-    void removeDislike(long userId, long reviewId);
+    void removeRating(long userId, long reviewId);
 
 }
