@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.dao.FilmUserLikesRepository;
 import ru.yandex.practicum.filmorate.dao.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
