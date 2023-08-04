@@ -3,19 +3,15 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.dao.FeedRepository;
 import ru.yandex.practicum.filmorate.dao.UserFriendsRepository;
 import ru.yandex.practicum.filmorate.dao.UserRepository;
 import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.time.Instant;
 import java.util.List;
-
-import static ru.yandex.practicum.filmorate.enums.EventType.*;
-import static ru.yandex.practicum.filmorate.enums.OperationType.*;
 
 @Slf4j
 @Service
@@ -47,7 +43,6 @@ public class BaseUserService implements UserService {
     @Override
     public User update(User user) {
         findUser(user.getId());
-
         return userRepository.update(user);
     }
 
@@ -57,7 +52,6 @@ public class BaseUserService implements UserService {
             log.info(String.format("Ошибка получения пользователя с id: %s. Пользователь не найден", userId));
             return new NotFoundException(String.format("Пользователь с id %s не найден", userId));
         });
-
         return userFriendsRepository.getUserFriends(user);
     }
 
@@ -65,7 +59,6 @@ public class BaseUserService implements UserService {
     public void addFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-//        feedRepository.addFeed(userId, friendId, Instant.now().toEpochMilli(), FRIEND, ADD);
         feedService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.ADD);
         userFriendsRepository.add(user.getId(), friend.getId());
     }
@@ -74,7 +67,6 @@ public class BaseUserService implements UserService {
     public void approveFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-
         userFriendsRepository.approve(user.getId(), friend.getId());
     }
 
@@ -82,7 +74,6 @@ public class BaseUserService implements UserService {
     public void removeFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-//        feedRepository.addFeed(userId, friendId, Instant.now().toEpochMilli(), FRIEND, REMOVE);
         feedService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.REMOVE);
         userFriendsRepository.remove(user.getId(), friend.getId());
     }
@@ -95,4 +86,9 @@ public class BaseUserService implements UserService {
         return userFriendsRepository.getCommonFriends(firstUser.getId(), secondUser.getId());
     }
 
+    @Override
+    public List<Feed> getNewsFeed (long userId) {
+        findUser(userId);
+        return feedService.getNewsFeed(userId);
+    }
 }

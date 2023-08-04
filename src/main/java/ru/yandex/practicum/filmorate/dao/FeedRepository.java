@@ -8,10 +8,7 @@ import java.util.List;
 
 public interface FeedRepository {
 
-//    void addFeed(long entityId, long userID, long timeStamp, EventType eventType, OperationType operation);
-//
-//    List<Feed> getById(long id);
-List<Feed> getNewsFeed(long userId);
+    List<Feed> getNewsFeed(long userId);
 
     void saveFeed(long id, long entityId, EventType eventType, OperationType operation);
 }

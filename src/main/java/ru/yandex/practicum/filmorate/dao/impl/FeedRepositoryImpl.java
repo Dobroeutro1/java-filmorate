@@ -1,12 +1,7 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FeedRepository;
 import ru.yandex.practicum.filmorate.enums.EventType;
@@ -17,39 +12,11 @@ import ru.yandex.practicum.filmorate.model.Feed;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 
-//@Repository
-//@RequiredArgsConstructor(onConstructor_ = @Autowired)
 @Repository("FeedRepository")
 public class FeedRepositoryImpl implements FeedRepository {
 
-//    private final JdbcTemplate jdbcTemplate;
-//
-//    @Override
-//    public void addFeed(long entityId, long userId, long timeStamp,
-//                        EventType eventType, OperationType operation) {
-//        String sqlQuery = "INSERT INTO EVENTS (entity_id, user_id, time_stamp, event_type, event_operation) " +
-//                "values (?, ?, ?, ?, ?)";
-//        jdbcTemplate.update(sqlQuery, entityId, userId, timeStamp, eventType.toString(), operation.toString());
-//    }
-//
-//    @Override
-//    public List<Feed> getById(long id) {
-//        String sqlGetFeed = "select * from events where user_id = ? order by EVENT_ID";
-//        return jdbcTemplate.query(sqlGetFeed, this::makeFeed, id);
-//    }
-//
-//    Feed makeFeed(ResultSet rs, int rowNum) throws SQLException {
-//        long eventId = rs.getLong("event_id");
-//        long entityId = rs.getLong("entity_id");
-//        long userId = rs.getLong("user_id");
-//        long time = rs.getLong("time_stamp");
-//        EventType eventType = EventType.valueOf(rs.getString("event_type"));
-//        OperationType operation = OperationType.valueOf(rs.getString("event_operation"));
-//        return new Feed(eventId, entityId, time, userId, eventType, operation);
-//    }
 private final JdbcTemplate jdbcTemplate;
 
     @Autowired
@@ -91,5 +58,4 @@ private final JdbcTemplate jdbcTemplate;
                 .entityId(resultSet.getLong("entity_id"))
                 .build();
     }
-
 }

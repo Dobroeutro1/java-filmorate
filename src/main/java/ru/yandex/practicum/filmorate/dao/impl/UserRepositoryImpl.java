@@ -42,7 +42,6 @@ public class UserRepositoryImpl implements UserRepository {
         if (users.isEmpty()) {
             return Optional.empty();
         }
-
         return Optional.of(users.get(0));
     }
 
@@ -87,5 +86,4 @@ public class UserRepositoryImpl implements UserRepository {
 
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
-
 }

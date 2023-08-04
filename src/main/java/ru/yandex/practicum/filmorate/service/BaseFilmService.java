@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.expression.Operation;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.*;
 import ru.yandex.practicum.filmorate.enums.EventType;
@@ -12,12 +11,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.MPA;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static ru.yandex.practicum.filmorate.enums.EventType.*;
-import static ru.yandex.practicum.filmorate.enums.OperationType.*;
 
 @Slf4j
 @Service
@@ -84,14 +79,12 @@ public class BaseFilmService implements FilmService {
 
     @Override
     public void addLike(long filmId, long userId) {
-//        feedRepository.addFeed(filmId, userId, Instant.now().toEpochMilli(), LIKE, ADD);
         filmUserLikesRepository.add(filmId, userId);
         feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.ADD);
     }
 
     @Override
     public void removeLike(long filmId, long userId) {
-//        feedRepository.addFeed(filmId, userId, Instant.now().toEpochMilli(), LIKE, REMOVE);
         feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.REMOVE);
         filmUserLikesRepository.remove(filmId, userId);
     }
@@ -151,5 +144,4 @@ public class BaseFilmService implements FilmService {
 
         return films;
     }
-
 }
