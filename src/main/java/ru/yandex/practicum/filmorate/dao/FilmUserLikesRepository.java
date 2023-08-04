@@ -14,4 +14,6 @@ public interface FilmUserLikesRepository {
 
     List<Film> getCommonFilms(long userId, long friendId);
 
+    List<Film> getLikedFilmsByUser(long userId);
+
 }

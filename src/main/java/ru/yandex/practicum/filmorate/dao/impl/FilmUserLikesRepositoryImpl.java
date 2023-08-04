@@ -39,6 +39,13 @@ public class FilmUserLikesRepositoryImpl implements FilmUserLikesRepository {
     }
 
     public List<Film> getCommonFilms(long userId, long friendId) {
+        List<Film> userFilms = getLikedFilmsByUser(userId);
+        userFilms.retainAll(getLikedFilmsByUser(friendId));
+        return userFilms;
+    }
+
+    @Override
+    public List<Film> getLikedFilmsByUser(long userId) {
         String sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
                 "FROM FILMS F " +
                 "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
@@ -48,20 +55,7 @@ public class FilmUserLikesRepositoryImpl implements FilmUserLikesRepository {
                 "ORDER BY COUNT(FL.USER_ID) DESC ";
         MapSqlParameterSource map = new MapSqlParameterSource();
         map.addValue("user_id", userId);
-        List<Film> userFilms = new ArrayList<>(jdbcOperations.query(sqlQuery, map, new FilmRowMapper()));
-
-        sqlQuery = "SELECT F.*, M.NAME AS MPA_NAME " +
-                "FROM FILMS F " +
-                "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
-                "LEFT JOIN FILM_LIKES FL on F.ID = FL.FILM_ID " +
-                "WHERE fl.USER_ID = :friend_id " +
-                "GROUP BY F.ID " +
-                "ORDER BY COUNT(FL.USER_ID) DESC ";
-        map = new MapSqlParameterSource();
-        map.addValue("friend_id", friendId);
-        List<Film> friendFilms = new ArrayList<>(jdbcOperations.query(sqlQuery, map, new FilmRowMapper()));
-        userFilms.retainAll(friendFilms);
-        return userFilms;
+        return jdbcOperations.query(sqlQuery, map, new FilmRowMapper());
     }
 
     @Override
