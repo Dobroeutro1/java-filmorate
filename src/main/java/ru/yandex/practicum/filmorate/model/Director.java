@@ -9,6 +9,8 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class Director {
     private long id;
+
     @NotBlank
     private String name;
+
 }
