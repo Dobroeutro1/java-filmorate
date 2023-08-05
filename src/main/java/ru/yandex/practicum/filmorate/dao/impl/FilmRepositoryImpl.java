@@ -9,11 +9,9 @@ import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FilmRepository;
 import ru.yandex.practicum.filmorate.dao.mapper.FilmRowMapper;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.SearchFilmBy;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Repository
@@ -121,6 +119,35 @@ public class FilmRepositoryImpl implements FilmRepository {
                 "GROUP BY F.ID " +
                 "ORDER BY COUNT(FL.USER_ID) DESC";
         return jdbcOperations.query(sqlQuery, Map.of("directorId", directorId), new FilmRowMapper());
+    }
+
+    @Override
+    public List<Film> searchFilmByNameAndDirectors(String query, Set<SearchFilmBy> bySet) {
+        StringBuilder sqlQuery = new StringBuilder(
+                "SELECT F.*, M.NAME AS MPA_NAME " +
+                        "FROM FILMS F " +
+                        "LEFT JOIN MPA M on M.ID = F.MPA_ID " +
+                        "LEFT JOIN PUBLIC.FILM_LIKES FL on F.ID = FL.FILM_ID ");
+        String sqlDirectors = "LEFT JOIN FILM_DIRECTORS FD ON FD.FILM_ID = F.ID " +
+                "LEFT JOIN DIRECTORS D ON D.ID = FD.DIRECTOR_ID ";
+
+        MapSqlParameterSource map = new MapSqlParameterSource();
+
+        if (bySet.contains(SearchFilmBy.director) && bySet.contains(SearchFilmBy.title)) {
+            sqlQuery
+                    .append(sqlDirectors)
+                    .append("WHERE LOWER(F.NAME) LIKE LOWER(:query) OR LOWER(D.NAME) LIKE LOWER(:query)");
+        } else if (bySet.contains(SearchFilmBy.director)) {
+            sqlQuery.append(sqlDirectors).append("WHERE LOWER(D.NAME) LIKE LOWER(:query)");
+        } else if (bySet.contains(SearchFilmBy.title)) {
+            sqlQuery.append("WHERE LOWER(F.NAME) LIKE LOWER(:query)");
+        }
+
+        sqlQuery.append("GROUP BY F.ID ").append("ORDER BY COUNT(FL.USER_ID) DESC");
+
+        map.addValue("query", "%" + query + "%");
+
+        return jdbcOperations.query(sqlQuery.toString(), map, new FilmRowMapper());
     }
 
 }

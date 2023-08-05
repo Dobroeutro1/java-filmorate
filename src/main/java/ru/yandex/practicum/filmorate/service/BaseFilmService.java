@@ -5,10 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.*;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Director;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.MPA;
+import ru.yandex.practicum.filmorate.model.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -220,6 +217,14 @@ public class BaseFilmService implements FilmService {
         }
 
         return films;
+    }
+
+    @Override
+    public List<Film> search(String query, String by) {
+        Set<SearchFilmBy> searchFilmBySet = Arrays.stream(by.split(",")).map(SearchFilmBy::valueOf).collect(Collectors.toSet());
+        List<Film> films = filmRepository.searchFilmByNameAndDirectors(query, searchFilmBySet);
+
+        return getFilms(films);
     }
 
     private Map<Long, Set<Genre>> findGenresByFilmIds(List<Long> filmIds) {
