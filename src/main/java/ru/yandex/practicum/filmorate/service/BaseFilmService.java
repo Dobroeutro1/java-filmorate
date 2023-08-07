@@ -102,10 +102,8 @@ public class BaseFilmService implements FilmService {
     public void addLike(long filmId, long userId) {
         try {
             filmUserLikesRepository.add(filmId, userId);
-
-        } catch (DuplicateKeyException ignored) {
-        } finally {
             feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.ADD);
+        } catch (DuplicateKeyException ignored) {
         }
     }
 
