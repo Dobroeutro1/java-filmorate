@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Review;
-import ru.yandex.practicum.filmorate.service.BaseReviewService;
+import ru.yandex.practicum.filmorate.service.impl.BaseReviewService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/reviews")
 public class ReviewsController {
 
-    final BaseReviewService reviewService;
+    private final BaseReviewService reviewService;
 
     @GetMapping()
     public List<Review> getAll(@RequestParam(required = false) Long filmId,

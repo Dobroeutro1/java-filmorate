@@ -4,11 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.BaseUserService;
-import ru.yandex.practicum.filmorate.service.FeedService;
+import ru.yandex.practicum.filmorate.service.impl.BaseUserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -20,8 +19,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    final BaseUserService service;
-    final FeedService feedService;
+    private final BaseUserService service;
 
     @GetMapping()
     public List<User> getAll() {
@@ -84,7 +82,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}/feed")
-    public List<Feed> getFeed(@PathVariable("id") long id) {
+    public List<Event> getFeed(@PathVariable("id") long id) {
         log.info("GET-запрос к эндпоинту: '/user/{id}/feed");
         return service.getNewsFeed(id);
     }

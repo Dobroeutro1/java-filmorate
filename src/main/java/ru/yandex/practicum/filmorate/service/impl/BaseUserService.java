@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +9,11 @@ import ru.yandex.practicum.filmorate.dao.UserRepository;
 import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.service.EventService;
+import ru.yandex.practicum.filmorate.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +25,7 @@ public class BaseUserService implements UserService {
 
     private final UserRepository userRepository;
     private final UserFriendsRepository userFriendsRepository;
-    private final FeedService feedService;
+    private final EventService eventService;
     private final FilmUserLikesRepository filmUserLikesRepository;
     private final BaseFilmService filmService;
 
@@ -71,7 +73,7 @@ public class BaseUserService implements UserService {
     public void addFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-        feedService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.ADD);
+        eventService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.ADD);
         userFriendsRepository.add(user.getId(), friend.getId());
     }
 
@@ -87,7 +89,7 @@ public class BaseUserService implements UserService {
     public void removeFriend(long userId, long friendId) {
         User user = findUser(userId);
         User friend = findUser(friendId);
-        feedService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.REMOVE);
+        eventService.saveFeed(userId, friendId, EventType.FRIEND, OperationType.REMOVE);
         userFriendsRepository.remove(user.getId(), friend.getId());
     }
 
@@ -120,10 +122,9 @@ public class BaseUserService implements UserService {
     }
 
 
-
     @Override
-    public List<Feed> getNewsFeed(long userId) {
+    public List<Event> getNewsFeed(long userId) {
         findUser(userId);
-        return feedService.getNewsFeed(userId);
+        return eventService.getNewsFeed(userId);
     }
 }

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.service.EventService;
+import ru.yandex.practicum.filmorate.service.ReviewService;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class BaseReviewService implements ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ReviewLikeRepository reviewLikeRepository;
-    private final FeedService feedService;
+    private final EventService eventService;
 
     final BaseUserService userService;
     final BaseFilmService filmService;
@@ -45,7 +47,7 @@ public class BaseReviewService implements ReviewService {
         filmService.findFilm(review.getFilmId());
         long reviewId = reviewRepository.create(review).getReviewId();
         Review savedReview = getReview(reviewId);
-        feedService.saveFeed(savedReview.getUserId(), savedReview.getReviewId(), EventType.REVIEW, OperationType.ADD);
+        eventService.saveFeed(savedReview.getUserId(), savedReview.getReviewId(), EventType.REVIEW, OperationType.ADD);
         return savedReview;
     }
 
@@ -58,7 +60,7 @@ public class BaseReviewService implements ReviewService {
         getReview(review.getReviewId());
         reviewRepository.update(review);
         Review savedReview = getReview(review.getReviewId());
-        feedService.saveFeed(savedReview.getUserId(), savedReview.getReviewId(), EventType.REVIEW, OperationType.UPDATE);
+        eventService.saveFeed(savedReview.getUserId(), savedReview.getReviewId(), EventType.REVIEW, OperationType.UPDATE);
         return savedReview;
     }
 
@@ -66,7 +68,7 @@ public class BaseReviewService implements ReviewService {
     public void remove(long reviewId) {
         Review review = getReview(reviewId);
         reviewRepository.remove(reviewId);
-        feedService.saveFeed(review.getUserId(), review.getReviewId(), EventType.REVIEW, OperationType.REMOVE);
+        eventService.saveFeed(review.getUserId(), review.getReviewId(), EventType.REVIEW, OperationType.REMOVE);
     }
 
     @Override
