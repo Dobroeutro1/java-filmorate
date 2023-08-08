@@ -10,6 +10,8 @@ import ru.yandex.practicum.filmorate.exeption.AlreadyExistException;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.ErrorResponse;
 
+import javax.validation.ConstraintViolationException;
+
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
@@ -17,6 +19,13 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleValidationException(final MethodArgumentNotValidException e) {
+        log.error("ERROR Validation 400! {}", e.getMessage());
+        return new ErrorResponse("Ошибка валидации: " + e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleValidationException(final ConstraintViolationException e) {
         log.error("ERROR Validation 400! {}", e.getMessage());
         return new ErrorResponse("Ошибка валидации: " + e.getMessage());
     }

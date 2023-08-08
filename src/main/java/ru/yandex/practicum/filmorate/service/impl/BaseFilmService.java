@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.service;
+package ru.yandex.practicum.filmorate.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +9,8 @@ import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.OperationType;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
 import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.service.EventService;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +27,7 @@ public class BaseFilmService implements FilmService {
     private final GenreRepository genreRepository;
     private final DirectorRepository directorRepository;
     private final FilmDirectorsRepository filmDirectorsRepository;
-    private final FeedService feedService;
+    private final EventService eventService;
 
     @Override
     public List<Film> getAll() {
@@ -105,13 +107,13 @@ public class BaseFilmService implements FilmService {
 
         } catch (DuplicateKeyException ignored) {
         } finally {
-            feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.ADD);
+            eventService.saveFeed(userId, filmId, EventType.LIKE, OperationType.ADD);
         }
     }
 
     @Override
     public void removeLike(long filmId, long userId) {
-        feedService.saveFeed(userId, filmId, EventType.LIKE, OperationType.REMOVE);
+        eventService.saveFeed(userId, filmId, EventType.LIKE, OperationType.REMOVE);
         filmUserLikesRepository.remove(filmId, userId);
     }
 

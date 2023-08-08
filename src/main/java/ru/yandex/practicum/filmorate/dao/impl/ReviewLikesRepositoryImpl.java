@@ -10,7 +10,6 @@ import ru.yandex.practicum.filmorate.model.ReviewLike;
 
 import java.util.List;
 
-@Slf4j
 @Repository
 public class ReviewLikesRepositoryImpl implements ReviewLikeRepository {
 

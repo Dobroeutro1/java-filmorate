@@ -1,16 +1,16 @@
 package ru.yandex.practicum.filmorate.dao.mapper;
 
 import org.springframework.jdbc.core.RowMapper;
-import ru.yandex.practicum.filmorate.model.Feed;
+import ru.yandex.practicum.filmorate.model.Event;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class FeedRowMapper implements RowMapper<Feed> {
+public class EventRowMapper implements RowMapper<Event> {
 
     @Override
-    public Feed mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return Feed.builder()
+    public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
+        return Event.builder()
                 .timestamp(rs.getTimestamp("time_stamp").toInstant().toEpochMilli())
                 .userId(rs.getLong("user_id"))
                 .eventType(rs.getString("event_type"))

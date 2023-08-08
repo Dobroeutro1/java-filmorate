@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.service.BaseGenreService;
+import ru.yandex.practicum.filmorate.service.impl.BaseGenreService;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/genres")
 public class GenreController {
 
-    final BaseGenreService service;
+    private final BaseGenreService service;
 
     @GetMapping()
     public List<Genre> getAll() {
