@@ -1,6 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -11,13 +11,10 @@ import ru.yandex.practicum.filmorate.model.ReviewLike;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class ReviewLikesRepositoryImpl implements ReviewLikeRepository {
 
     private final NamedParameterJdbcOperations jdbcOperations;
-
-    public ReviewLikesRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {
-        this.jdbcOperations = jdbcOperations;
-    }
 
     @Override
     public Boolean isHaveUserLike(Long reviewId, Long userId) {

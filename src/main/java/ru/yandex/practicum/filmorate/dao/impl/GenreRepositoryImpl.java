@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -15,13 +16,10 @@ import java.util.Set;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class GenreRepositoryImpl implements GenreRepository {
 
     private final NamedParameterJdbcOperations jdbcOperations;
-
-    public GenreRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {
-        this.jdbcOperations = jdbcOperations;
-    }
 
     @Override
     public List<Genre> getAll() {

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -10,13 +11,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 
 @Repository
+@RequiredArgsConstructor
 public class UserFriendsRepositoryImpl implements UserFriendsRepository {
 
     private final NamedParameterJdbcOperations jdbcOperations;
-
-    public UserFriendsRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {
-        this.jdbcOperations = jdbcOperations;
-    }
 
     @Override
     public List<User> getUserFriends(User user) {
