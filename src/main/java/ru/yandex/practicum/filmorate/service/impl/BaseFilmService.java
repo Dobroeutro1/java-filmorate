@@ -7,7 +7,12 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dao.*;
 import ru.yandex.practicum.filmorate.enums.EventType;
 import ru.yandex.practicum.filmorate.enums.OperationType;
+import ru.yandex.practicum.filmorate.enums.SearchFilmBy;
 import ru.yandex.practicum.filmorate.exeption.NotFoundException;
+import ru.yandex.practicum.filmorate.model.Director;
+import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.service.EventService;
 import ru.yandex.practicum.filmorate.service.FilmService;
@@ -45,8 +50,12 @@ public class BaseFilmService implements FilmService {
         Set<Genre> genres = filmGenresRepository.findGenresByFilmId(filmId);
         Set<Director> directors = filmDirectorsRepository.findDirectorsByFilmId(filmId);
 
-        film.setGenres(genres != null ? genres : new HashSet<>());
-        film.setDirectors(directors != null ? directors : new HashSet<>());
+        if (genres != null) {
+            film.setGenres(genres);
+        }
+        if (directors != null) {
+            film.setDirectors(directors);
+        }
 
         return film;
     }
@@ -222,9 +231,12 @@ public class BaseFilmService implements FilmService {
                 .collect(Collectors.toList()));
 
         for (Film film : films) {
-            film.setGenres(filmGenresMap.get(film.getId()) != null ? filmGenresMap.get(film.getId()) : new HashSet<>());
-            film.setDirectors(
-                    filmDirectorsMap.get(film.getId()) != null ? filmDirectorsMap.get(film.getId()) : new HashSet<>());
+            if (filmGenresMap.get(film.getId()) != null) {
+                film.setGenres(filmGenresMap.get(film.getId()));
+            }
+            if (filmDirectorsMap.get(film.getId()) != null) {
+                film.setDirectors(filmDirectorsMap.get(film.getId()));
+            }
         }
 
         return films;

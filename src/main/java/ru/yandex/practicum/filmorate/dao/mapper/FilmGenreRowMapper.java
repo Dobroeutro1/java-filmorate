@@ -12,8 +12,10 @@ public class FilmGenreRowMapper implements RowMapper<HashMap<Long, Genre>> {
     public HashMap<Long, Genre> mapRow(ResultSet rs, int rowNum) throws SQLException {
         HashMap<Long, Genre> result = new HashMap<>();
 
-        result.put(rs.getLong("FILM_ID"), new Genre(rs.getLong("ID"),
-                rs.getString("NAME")));
+        result.put(rs.getLong("FILM_ID"),
+                Genre.builder()
+                        .id(rs.getLong("ID"))
+                        .name(rs.getString("NAME")).build());
 
         return result;
     }

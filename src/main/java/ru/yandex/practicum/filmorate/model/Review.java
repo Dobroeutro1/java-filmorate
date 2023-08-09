@@ -1,14 +1,14 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
-@Getter
-@Setter
-@ToString
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@Builder
 public class Review {
 
     private long reviewId;

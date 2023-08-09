@@ -13,10 +13,11 @@ public class FilmDirectorRowMapper implements RowMapper<HashMap<Long, Director>>
     public HashMap<Long, Director> mapRow(ResultSet rs, int rowNum) throws SQLException {
         HashMap<Long, Director> result = new HashMap<>();
 
-        result.put(rs.getLong("FILM_ID"), Director.builder()
-                .id(rs.getLong("ID"))
-                .name(rs.getString("NAME"))
-                .build());
+        result.put(rs.getLong("FILM_ID"),
+                Director.builder()
+                        .id(rs.getLong("ID"))
+                        .name(rs.getString("NAME"))
+                        .build());
 
         return result;
     }
