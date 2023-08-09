@@ -6,17 +6,20 @@ import ru.yandex.practicum.filmorate.model.MPA;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
 
 public class FilmRowMapper implements RowMapper<Film> {
     @Override
     public Film mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new Film(rs.getLong("ID"),
-                rs.getString("NAME"),
-                rs.getString("DESCRIPTION"),
-                rs.getDate("RELEASE_DATE").toLocalDate(),
-                rs.getInt("DURATION"),
-                new MPA(rs.getLong("MPA_ID"), rs.getString("MPA_NAME")),
-                new HashSet<>());
+        return Film.builder()
+                .id(rs.getLong("ID"))
+                .name(rs.getString("NAME"))
+                .description(rs.getString("DESCRIPTION"))
+                .releaseDate(rs.getDate("RELEASE_DATE").toLocalDate())
+                .duration(rs.getInt("DURATION"))
+                .mpa(MPA.builder()
+                        .id(rs.getLong("MPA_ID"))
+                        .name(rs.getString("MPA_NAME"))
+                        .build())
+                .build();
     }
 }

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dao.impl;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -11,18 +12,16 @@ import ru.yandex.practicum.filmorate.dao.mapper.UserRowMapper;
 import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
 @Repository
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepository {
 
     private final NamedParameterJdbcOperations jdbcOperations;
-
-    public UserRepositoryImpl(NamedParameterJdbcOperations jdbcOperations) {
-        this.jdbcOperations = jdbcOperations;
-    }
 
     @Override
     public List<User> getAll() {
@@ -71,6 +70,14 @@ public class UserRepositoryImpl implements UserRepository {
         sqlUpdate(sqlQuery, user);
 
         return user;
+    }
+
+    @Override
+    public void deleteUser(long userId) {
+        log.info("Удаление пользователя с id: " + userId);
+        final String sqlQuery = "DELETE FROM USERS " +
+                "WHERE ID = :userId";
+        jdbcOperations.update(sqlQuery, Map.of("userId", userId));
     }
 
     private long sqlUpdate(String sqlQuery, User user) {

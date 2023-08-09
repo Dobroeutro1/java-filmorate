@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.service.BaseUserService;
+import ru.yandex.practicum.filmorate.service.impl.BaseUserService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -17,7 +19,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController {
 
-    final BaseUserService service;
+    private final BaseUserService service;
 
     @GetMapping()
     public List<User> getAll() {
@@ -41,6 +43,12 @@ public class UserController {
     public User update(@Valid @RequestBody User user) {
         log.info("PUT-запрос к эндпоинту: '/users'");
         return service.update(user);
+    }
+
+    @DeleteMapping("/{userId}")
+    public void delete(@PathVariable("userId") long userId) {
+        log.info("DELETE-запрос к эндпоинту: '/users/{userId}");
+        service.delete(userId);
     }
 
     @GetMapping("/{userId}/friends")
@@ -71,6 +79,18 @@ public class UserController {
     public List<User> getCommonFriends(@PathVariable("userId") long userId, @PathVariable("otherId") long otherId) {
         log.info("GET-запрос к эндпоинту: '/users/{userId}/friends/common/{otherId}");
         return service.getCommonFriends(userId, otherId);
+    }
+
+    @GetMapping("/{id}/feed")
+    public List<Event> getFeed(@PathVariable("id") long id) {
+        log.info("GET-запрос к эндпоинту: '/user/{id}/feed");
+        return service.getNewsFeed(id);
+    }
+
+    @GetMapping("/{userId}/recommendations")
+    public List<Film> getRecommendations(@PathVariable("userId") long userId) {
+        log.info("GET-запрос к эндпоинту: '/users/{userId}/recommendations");
+        return service.getRecommendations(userId);
     }
 
 }
