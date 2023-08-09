@@ -8,8 +8,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.dao.FilmRepository;
 import ru.yandex.practicum.filmorate.dao.mapper.FilmRowMapper;
+import ru.yandex.practicum.filmorate.enums.SearchFilmBy;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.SearchFilmBy;
 
 import java.util.*;
 

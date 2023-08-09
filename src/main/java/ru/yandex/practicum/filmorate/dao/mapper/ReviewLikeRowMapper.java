@@ -9,9 +9,10 @@ import java.sql.SQLException;
 public class ReviewLikeRowMapper implements RowMapper<ReviewLike> {
     @Override
     public ReviewLike mapRow(ResultSet rs, int rowNum) throws SQLException {
-        return new ReviewLike(rs.getLong("REVIEW_ID"),
-                rs.getBoolean("IS_LIKE"),
-                rs.getLong("USER_ID")
-        );
+        return ReviewLike.builder()
+                .reviewId(rs.getLong("REVIEW_ID"))
+                .isLike(rs.getBoolean("IS_LIKE"))
+                .userId(rs.getLong("USER_ID"))
+                .build();
     }
 }

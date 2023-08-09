@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.*;
-import org.springframework.lang.Nullable;
+import lombok.Builder;
+import lombok.Data;
 import ru.yandex.practicum.filmorate.validator.ReleaseDateConstraint;
 
 import javax.validation.constraints.NotEmpty;
@@ -9,14 +9,11 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
-@Getter
-@Setter
-@ToString
-@EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
+@Builder
 public class Film {
 
     private long id;
@@ -40,9 +37,9 @@ public class Film {
     @NotNull
     private MPA mpa;
 
-    @Nullable
-    private Set<Genre> genres;
+    @Builder.Default
+    private Set<Genre> genres = new HashSet<>();
 
-    @Nullable
-    private Set<Director> directors;
+    @Builder.Default
+    private Set<Director> directors = new HashSet<>();
 }
